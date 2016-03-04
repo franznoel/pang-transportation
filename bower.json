@@ -1,0 +1,26 @@
+{
+  "name": "pang-transportation",
+  "description": "An application to find the departing time and arrival time of a train.",
+  "main": "",
+  "authors": [
+    "Franz Noel Tanglao"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "transportation",
+    "app"
+  ],
+  "homepage": "https://github.com/fritzdenim/pang-transportation",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular2-build": "~2.0.0-alpha.34"
+  }
+}

@@ -1,12 +1,69 @@
-// Include gulp
-var gulp = require('gulp'); 
+// Include gulp and plugins
+var gulp    = require('gulp'); 
+var jshint      = require('gulp-jshint');
+var sass        = require('gulp-sass');
+var concat      = require('gulp-concat');
+var uglify      = require('gulp-uglify');
+var rename      = require('gulp-rename');
+var clean       = require('gulp-clean');
+var browserSync = require('browser-sync');
+var reload      = browserSync.reload;
+var merge       = require('merge-stream');
 
-// Include Our Plugins
-var jshint = require('gulp-jshint');
-var sass = require('gulp-sass');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
+// Clean dist folder
+gulp.task('clean',function() {
+    return gulp.src(
+        ['dist'],{read:false})
+        .pipe(clean());
+});
+
+gulp.task('copy',['clean'],function() {
+    var app = gulp.src(['src/*.html'])
+        .pipe(gulp.dest('dist'));
+
+    var bower = gulp.src(['bower_components/*',])
+        .pipe(gulp.dest('dist/bower_components'));
+
+    var node_modules = gulp.src(['node_modules/*',])
+        .pipe(gulp.dest('dist/node_modules'));
+
+    var angular = gulp.src(['src/app/*'])
+        .pipe(gulp.dest('dist/app'));
+
+    var data = gulp.src(['src/data/*'])
+        .pipe(gulp.dest('dist/data'));
+
+    return merge(app,bower,node_modules,angular,data);
+});
+
+// Watch files for changes and reload
+gulp.task('serve',function() {
+    browserSync({
+        port: 3000,
+        notify: false,
+        logPrefix: 'PSK',
+        server: {
+            baseDir: ['dist'],
+        }
+    });
+
+    gulp.watch(['src/*.html'], reload);
+    gulp.watch(['src/sass/*.scss'], ['styles', reload]);
+    gulp.watch(['src/css/*.css'], ['elements', reload]);
+    gulp.watch(['src/scripts/*.js','src/*.html}'], ['jshint']);
+    gulp.watch(['src/images/**/*'], reload);
+});
+
+// Build and serve the output from the dist build
+gulp.task('serve:dist', ['default'], function () {
+    browserSync({
+        port: 3001,
+        notify: false,
+        logPrefix: 'PSK',
+        server: 'dist',
+        middleware: [ historyApiFallback() ]
+    });
+});
 
 // Lint Task
 gulp.task('lint', function() {
@@ -17,26 +74,10 @@ gulp.task('lint', function() {
 
 // Compile Our Sass
 gulp.task('sass', function() {
-    return gulp.src('scss/*.scss')
+    return gulp.src('src/scss/*.scss')
         .pipe(sass())
-        .pipe(gulp.dest('css'));
-});
-
-// Concatenate & Minify JS
-gulp.task('scripts', function() {
-    return gulp.src('js/*.js')
-        .pipe(concat('all.js'))
-        .pipe(gulp.dest('dist'))
-        .pipe(rename('all.min.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest('dist'));
-});
-
-// Watch Files For Changes
-gulp.task('watch', function() {
-    gulp.watch('js/*.js', ['lint', 'scripts']);
-    gulp.watch('scss/*.scss', ['sass']);
+        .pipe(gulp.dest('dist/css/style.css'));
 });
 
 // Default Task
-gulp.task('default', ['lint', 'sass', 'scripts', 'watch']);
+gulp.task('default', ['copy','serve']); // 'lint', 'watch'
