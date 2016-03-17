@@ -21,7 +21,12 @@ gulp.task('copy',['clean'],function() {
     var app = gulp.src(['src/*.html'])
         .pipe(gulp.dest('dist'));
 
-    var bower = gulp.src(['bower_components/*',])
+    var bower = gulp.src([
+            'bower_components/*',
+            'bower_components/**/*',
+            'bower_components/**/**/**/*',
+            'bower_components/**/**/**/**/*'
+        ])
         .pipe(gulp.dest('dist/bower_components'));
 
     var node_modules = gulp.src(['node_modules/*',])
