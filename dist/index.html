@@ -24,7 +24,6 @@
     <div class="container">
       <div class="row">
         <div class="col-md-4">
-
           <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
               <div class="panel-heading" role="tab" id="headingOne">
@@ -36,17 +35,22 @@
                     <p>Set a location to start using </p>
                     <div class="form-group">
                       <label for="locationFrom">Location From</label>
-                      <input type="text" name="locationFrom" class="form-control input-lg" value="" placeholder="Location From" required autofocus />
+                      <input type="text" name="locationFrom" list="locationFrom" class="form-control" value="" placeholder="Location From" required autofocus />
+                      <datalist id="locationFrom">
+                      </datalist>
                     </div>
                     <div class="form-group">
                       <label for="locationTo">Location To</label>
-                      <input type="text" name="locationFrom" class="form-control input-lg" value="" placeholder="Location To" required/>
+                      <input type="text" name="locationTo" list="locationTo" class="form-control" value="" placeholder="Location To" required/>
+                      <datalist id="locationTo">
+                      </datalist>
                     </div>
-                    <input type="submit" name="submit" class="btn btn-primary btn-block btn-lg" value="Submit" />
+                    <input type="submit" name="submit" class="btn btn-primary btn-block" value="Submit" />
                   </form>
                 </div>
               </div>
             </div>
+            <!--
             <div class="panel panel-default">
               <div class="panel-heading" role="tab" id="headingOne">
                 <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#selectTrain" aria-expanded="true" aria-controls="selectTrain">View Trains and Paths</a></h4>
@@ -62,15 +66,12 @@
                 </div>
               </div>
             </div>
+            -->
           </div>
 
         </div>
         <div class="col-md-8">
-          <div class="panel panel-info">
-            <div class="panel-body">
-              <h4>Tram</h4>
-              <p>Location</p>
-            </div>
+          <div id="stations" class="list-group">
           </div>
         </div>
       </div>
@@ -78,7 +79,69 @@
 
   </body>
   <script type="text/javascript">
-    $("#accordion")
+    function setStations(stops) {
+      var template="";
+      for(var i=0;i<stops.length;i++) {
+        if (stops[i]!="undefined") {
+          template+='<option value="'+stops[i].name+'">'+stops[i].id+'</option>';
+        }
+      }
+      console.log(template);
+      $("#locationFrom").html(template);
+      $("#locationTo").html(template);
+    }
+    function displayStations(stops) {
+      var template="";
+      for(var i=0;i<stops.length;i++) {
+        if (stops[i]!="undefined") {
+          template+='<a href="" class="list-group-item">'+stops[i].name+'</a>';
+          $("#stations").html(template);
+        }
+      }
+    }
+
+
+    $(document).ready(function() {
+        $.ajax({
+            url: "../data/stops.txt",
+            type:"GET",
+            success:function(xhr,response) {
+                var stops = xhr.split('\n');
+                // stops = JSON.stringify(stops);
+                var new_stop = [];
+                var stop_id = stop_name = stop_lat = stop_lon = zone_id = "";
+
+                for(var i=0;i<stops.length;i++) {
+                    stop = stops[i].split(",");
+                    if (i==0) { // Set the keys
+                      stop_id = stop[0];
+                      stop_name = stop[1];
+                      stop_lat = stop[2];
+                      stop_long = stop[3];
+                      stop_zone_id = stop[4];
+                    } else { // Set the values
+                      // new_stop[i] = 
+                      new_stop.push({
+                        id: stop[0],
+                        name: stop[1],
+                        lat: stop[2],
+                        long: stop[3],
+                        zone_id: stop[4]
+                      });
+                    }
+                }
+                // console.log(stops.length);
+                // console.log(stops);
+                console.log(new_stop);
+                setStations(new_stop);
+                displayStations(new_stop);
+                // console.log(stop_id, stop_name,stop_lat,stop_long,stop_zone_id);
+            }
+        });
+
+        // console.log(stops[i].stop_id);
+        $(".locationFrom").html()
+    });
   </script>
 </html>
 
