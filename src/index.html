@@ -103,7 +103,7 @@
 
     $(document).ready(function() {
         $.ajax({
-            url: "../data/stops.txt",
+            url: "/data/stops.txt",
             type:"GET",
             success:function(xhr,response) {
                 var stops = xhr.split('\n');

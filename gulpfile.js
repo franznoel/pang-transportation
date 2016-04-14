@@ -35,7 +35,7 @@ gulp.task('copy',['clean'],function() {
     var angular = gulp.src(['src/app/*'])
         .pipe(gulp.dest('dist/app'));
 
-    var data = gulp.src(['src/data/*'])
+    var data = gulp.src(['data/gtfs/*'])
         .pipe(gulp.dest('dist/data'));
 
     return merge(app,bower,node_modules,angular,data);
