@@ -22,12 +22,12 @@ gulp.task('copy',['clean'],function() {
         .pipe(gulp.dest('dist'));
 
     var bower = gulp.src([
-            'bower_components/*',
-            'bower_components/**/*',
-            'bower_components/**/**/**/*',
-            'bower_components/**/**/**/**/*'
+            'libs/*',
+            'libs/**/*',
+            'libs/**/**/**/*',
+            'libs/**/**/**/**/*'
         ])
-        .pipe(gulp.dest('dist/bower_components'));
+        .pipe(gulp.dest('dist/libs'));
 
     var node_modules = gulp.src(['node_modules/*',])
         .pipe(gulp.dest('dist/node_modules'));
@@ -55,7 +55,7 @@ gulp.task('serve',function() {
     gulp.watch(['src/*.html'], reload);
     gulp.watch(['src/sass/*.scss'], ['styles', reload]);
     gulp.watch(['src/css/*.css'], ['elements', reload]);
-    gulp.watch(['src/scripts/*.js','src/*.html}'], ['jshint']);
+    gulp.watch(['src/script.js','src/scripts/*.js','src/*.html'], ['jshint']);
     gulp.watch(['src/images/**/*'], reload);
 });
 
